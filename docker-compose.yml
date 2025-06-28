@@ -1,0 +1,37 @@
+version: "3.5"
+volumes:
+  persistent:
+  scripts:
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:80
+    depends_on:
+      - mysql
+    restart: always
+  mysql:
+    build:
+      context: .
+      dockerfile: Dockerfile_db
+    # image: mysql:5.6.40
+    ports:
+      - 3306:3306
+    expose:
+      - '3306'
+    volumes:
+      - ./persistent:/usr/src/tribalwars:rw
+      - ./scripts:/usr/src/tribalwars-scripts:rw
+    environment:
+      MYSQL_ROOT_PASSWORD: my-secret-pw
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user1234
+    restart: always
+    healthcheck:
+      test: "mysqladmin ping -h localhost"
+      interval: 1s
+      timeout: 1s
+      retries: 60

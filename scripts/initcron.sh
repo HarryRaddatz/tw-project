@@ -1,0 +1,1 @@
+crontab -l | { cat; echo "* * * * * /usr/bin/php /usr/src/tribalwars/tribalwars/wereld1/daemons/event.php"; } | crontab -

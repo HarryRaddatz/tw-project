@@ -1,0 +1,176 @@
+{if $report.wins=='att'}<h3 style="margin-bottom:5px;">The attacker won!</h3>{else}<h3 style="margin-bottom:5px;">O defensor venceu</h3>{/if}
+<div class="report_image {$report.image}" style="margin-left:1px;">    	    	        
+	<div class="report_transparent_overlay">
+		<h4 style="color:#000000;">Luck (from the attacker's point of view)</h4>
+		{if $report.luck < 0}
+		<table id="attack_luck">
+			<tr>
+				<td class="nobg">{if $report.luck < 1}<img src="{$config.cdn}/graphic/icons/rabe.png" alt="Azar" />{else}<img src="{$config.cdn}/graphic/icons/rabe_grau.png" alt="Azar" />{/if}</td>
+				<td class="nobg">
+					<table class="luck" cellspacing="0" cellpadding="0">
+						<tr>
+							<td class="luck-item nobg" width="{math equation="a-(b*(x * y))" b=-1 a=50 x=$report.luck y=2}" height="12"></td>
+							<td class="luck-item nobg" width="{math equation="b*(x * y)" b=-1 x=$report.luck y=2}" style="background-image:url(../{$config.cdn}/graphic/layout/balken_pech.png);"></td>
+							<td class="luck-item nobg" width="0" style="background-image:url({$config.cdn}/graphic/layout/balken_glueck.png);border-left:1px solid #000000"></td>
+							<td class="luck-item nobg" width="50"></td>
+						</tr>
+					</table>
+				</td>
+				<td class="nobg">{if $report.luck>=1}<img src="{$config.cdn}/graphic/icons/klee.png" alt="Sorte" />{else}<img src="{$config.cdn}/graphic/icons/klee_grau.png" alt="Sorte" />{/if}</td>
+				<td class="nobg"><b style="color:#000000;">{$report.luck}%</b></td>
+			</tr>
+		</table>
+		{else}
+		<table id="attack_luck">
+			<tr>
+				<td class="nobg">{if $report.luck < 1}<img src="{$config.cdn}/graphic/icons/rabe.png" alt="Azar" />{else}<img src="{$config.cdn}/graphic/icons/rabe_grau.png" alt="Azar" />{/if}</td>
+				<td class="nobg">
+					<table class="luck" cellspacing="0" cellpadding="0">
+						<tr>
+							<td class="luck-item nobg" width="50" height="12"></td>
+							<td class="luck-item nobg" width="0" style="background-image:url('{$config.cdn}/graphic/layout/balken_pech.png');border-right:1px solid #000000"></td>
+							<td class="luck-item nobg" width="{math equation="x * y" x=$report.luck y=2}" style="background-image:url('{$config.cdn}/graphic/layout/balken_glueck.png');"></td>
+							<td class="luck-item nobg" width="{math equation="a-(x * y)" a=50 x=$report.luck y=2}"></td>
+						</tr>
+					</table>
+				</td>
+				<td class="nobg">{if $report.luck>=1}<img src="{$config.cdn}/graphic/icons/klee.png" alt="Sorte" />{else}<img src="{$config.cdn}/graphic/icons/klee_grau.png" alt="Sorte" />{/if}</td>
+				<td class="nobg"><b style="color:#000000;">{$report.luck}%</b></td>
+			</tr>
+		</table>
+		{/if}
+	{if $moral_activ=='true'}
+		<h4 style="color:#000000;">Moral: {$report.moral}%</h4>
+	{/if}
+	</div>
+</div>
+<table width="428" style="border:1px solid #804000;" align="center">
+	<tr><th style="width:20%">Atacante:</th><th><a href="game.php?village={$village.id}&amp;screen=info_player&amp;id={$report.from_user}">{$report.from_username|entparse}</a></th></tr>
+	<tr><td>Origem:</td><td><a href="game.php?village={$village.id}&amp;screen=info_village&amp;id={$report.from_village}">{$report.from_villagename} ({$report.from_x}|{$report.from_y}) K{$report.from_continent}</a></td></tr>
+	<tr>
+		<td colspan="2">
+			<table class="vis" align="center">
+				<tr class="center">
+					<td align="center">#</td>
+					{foreach from=$cl_units->get_array("dbname") item=dbname key=name}
+					<td width="35"><img src="{$config.cdn}/graphic/unit/{$dbname}.png" title="{$name}" alt="" /></td>
+					{/foreach}
+				</tr>
+				<tr class="center"><td>Tropas:</td>{foreach from=$report_units.units_a item=num_units}{if $num_units>0}<td>{$num_units}</td>{else}<td class="hidden">0</td>{/if}{/foreach}</tr>
+				<tr class="center"><td>Perdas:</td>{foreach from=$report_units.units_b item=num_units}{if $num_units>0}<td>{$num_units}</td>{else}<td class="hidden">0</td>{/if}{/foreach}</tr>
+			</table>
+		</td>
+	</tr>
+</table><br />
+<table width="428" style="border:1px solid #804000;" align="center">
+	<tr><th style="width:20%">Defensor:</th><th><a href="game.php?village={$village.id}&amp;screen=info_player&amp;id={$report.to_user}">{$report.to_username|entparse}</a></th></tr>
+	<tr><td>Destino:</td><td><a href="game.php?village={$village.id}&amp;screen=info_village&amp;id={$report.to_village}">{$report.to_villagename} ({$report.to_x}|{$report.to_y}) K{$report.to_continent}</a></td></tr>
+	<tr>
+		<td colspan="2">
+		{if $see_def_units}
+			<table class="vis" align="center">
+				<tr class="center">
+					<td align="center">#</td>
+					{foreach from=$cl_units->get_array("dbname") item=dbname key=name}
+					<td width="35"><img src="{$config.cdn}/graphic/unit/{$dbname}.png" title="{$name}" alt="" /></td>
+					{/foreach}
+				</tr>
+				<tr class="center"><td>Troops:</td>{foreach from=$report_units.units_c item=num_units}{if $num_units>0}<td>{$num_units}</td>{else}<td class="hidden">0</td>{/if}{/foreach}</tr>
+				<tr class="center"><td>You lost:</td>{foreach from=$report_units.units_d item=num_units}{if $num_units>0}<td>{$num_units}</td>{else}<td class="hidden">0</td>{/if}{/foreach}</tr>
+			</table>
+		{else}
+			<p>No units returned with information from enemy troops.</p>
+		{/if}
+		</td>
+	</tr>
+</table><br />
+{php}
+	/*$info = mysql_fetch_array(mysql_query("SELECT `s_buildings`,`s_res` FROM `reports` WHERE id = '".parse($_GET['view'])."'"));
+	if($info['s_res']){
+		$q_res = explode(';',$info['s_res']);
+		$n_res = array(
+			0 => '<img src="{$config.cdn}/graphic/icons/wood.png" title="Madeira" />',
+			1 => '<img src="{$config.cdn}/graphic/icons/stone.png" title="Argila" />',
+			2 => '<img src="{$config.cdn}/graphic/icons/iron.png" title="Ferro" />'
+		);
+		echo '<table width="428" style="border-spacing:1px;background-color:#FEE47D;" align="center">
+			<tr>
+				<th width="150">Discovered Resources:</th>
+				<td>';
+		for($i = 0; $i < count($n_res); $i++){
+			if($q_res[$i] > 0){
+				echo $n_res[$i].''.format_number($q_res[$i]).' ';
+			}
+		}
+		echo '</td></tr>';
+	}
+	if($info['s_buildings']){
+		$level = explode(';',$info['s_buildings']);
+		$_builds = array(
+			0 => 'Village Headquarters',
+			1 => 'Barracks',
+			2 => 'Stable',
+			3 => 'Workshop',
+			4 => 'Academy',
+			5 => 'Smithy',
+			6 => 'Rally Point',
+			7 => 'Market',
+			8 => 'Timber Camp',
+			9 => 'Clay Pit',
+			10 => 'Iron Mine',
+			11 => 'Farm',
+			12 => 'Warehouse',
+			13 => 'Hiding Place',
+			14 => 'Wall'
+		);
+		echo '<tr>
+				<th>Edifícios:</th>
+				<td>';
+		for($i = 0; $i < count($_builds); $i++)
+			if($level[$i] > 0)
+				echo $_builds[$i].' <b>('.nivel($level[$i]).')</b><br />';
+			echo '</td></tr></table><br/>';
+	}*/
+{/php}
+{if count($report_units.units_e)>1}
+<h4>Troops in movement</h4>
+<table width="428" class="vis" style="border:1px solid #804000;" align="center">
+	<tr>
+		{foreach from=$cl_units->get_array("dbname") item=dbname key=name}
+		<th width="35"><img src="{$config.cdn}/graphic/unit/{$dbname}.png" title="{$name}" alt="" /></th>
+		{/foreach}
+	</tr>
+	<tr>{foreach from=$report_units.units_e item=num_units}{if $num_units>0}<td>{$num_units}</td>{else}<td class="hidden">0</td>{/if}{/foreach}</tr>
+</table><br />
+{/if}
+<table width="428" style="border:1px solid #804000;" align="center">
+	{if $report_ress.wood > 0 || $report_ress.stone > 0 || $report_ress.iron > 0}
+	<tr>
+		<th>Plundered:</th>
+		<td width="220">
+			{if $report_ress.wood > 0}<img src="{$config.cdn}/graphic/icons/wood.png" title="Wood" /> {$report_ress.wood} {/if}
+			{if $report_ress.stone > 0}<img src="{$config.cdn}/graphic/icons/stone.png" title="Clay" /> {$report_ress.stone} {/if}
+			{if $report_ress.iron > 0}<img src="{$config.cdn}/graphic/icons/iron.png" title="Iron" /> {$report_ress.iron} {/if}
+		</td>
+		<td>{$report_ress.sum|format_number}/{$report_ress.max|format_number}</td>
+	</tr>
+	{/if}
+	{if $report_ram.from != $report_ram.to}
+	<tr>
+		<th>Rams:</th>
+		<td colspan="2">Wall demolished from level <b>{$report_ram.from}</b> to level <b>{$report_ram.to}</b></td>
+	</tr>
+	{/if}
+	{if $report_agreement.from != $report_agreement.to}
+	<tr>
+		<th>Loyalty</th>
+		<td colspan="2">Loyalty has been reduced from <b>{$report_agreement.from}%</b> to level <b>{$report_agreement.to}%</b></td>
+	</tr>
+	{/if}
+	{if $report_catapult.from != $report_catapult.to}
+	<tr>
+		<th>Catapults:</th>
+		<td colspan="2">{$cl_builds->get_name($report_catapult.building)} demolished from level <b>{$report_catapult.from}</b> to level <b>{$report_catapult.to}</b></td>
+	</tr>
+	{/if}
+</table>
